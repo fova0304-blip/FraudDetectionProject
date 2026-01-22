@@ -32,13 +32,18 @@ rf = RandomForestClassifier(
 
 rf.fit(X_train,y_train)
 pred = rf.predict(X_test)
+#threshold adjustment
 pred_proba = rf.predict_proba(X_test)[:,1]
+pred_proba_45 =  rf.predict_proba(X_test)[:,1] > 0.45
+pred_proba_45 = [1 if proba == True else 0 for proba in pred_proba_45 ]
+
 
 # Accuracy만 하기엔 평가 지표가 너무 약함
 # Fraud는 조금 위험성만 있어도 잡아내야하기떄문에 confusion matrix가 필수임
 print(f"accuracy: {rf.score(X_test,y_test)}")
 print(f"roc_auc_score: {roc_auc_score(y_test, pred_proba)}")
-print(f"recall_score: {recall_score(y_test, pred)}")
+print(f"recall_score: {recall_score(y_test, pred)},threshold=0.5")
+print(f"recall_score: {recall_score(y_test,pred_proba_45)},threshold=0.45")
 print(f"confusion_matrix: {confusion_matrix(y_test, pred)}")
 
 '''
